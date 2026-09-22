@@ -1,0 +1,31 @@
+// Detection 01
+// Azure Resource Group Deletion
+//
+// Purpose:
+// Detect successful deletion of an Azure resource group.
+//
+// Possible false positive:
+// Authorized administrator intentionally deleting an unused
+// or temporary resource group.
+//
+// Response:
+// Confirm whether the deletion was authorized and investigate
+// the caller, source IP address, and affected resources.
+
+AzureActivity
+| where OperationNameValue =~ "MICROSOFT.RESOURCES/SUBSCRIPTIONS/RESOURCEGROUPS/DELETE"
+| where ActivityStatusValue in~ ("Succeeded", "Success")
+| extend AccountName = iff(Caller contains "@", tostring(split(Caller, "@")[0]), Caller)
+| extend AccountUPNSuffix = iff(Caller contains "@", tostring(split(Caller, "@")[1]), "")
+| project
+    TimeGenerated,
+    Caller,
+    AccountName,
+    AccountUPNSuffix,
+    CallerIpAddress,
+    OperationNameValue,
+    ActivityStatusValue,
+    ResourceGroup,
+    ResourceId,
+    SubscriptionId,
+    CorrelationId
