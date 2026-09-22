@@ -137,3 +137,30 @@ I used the following KQL query:
 AzureActivity
 | sort by TimeGenerated desc
 | take 20
+
+
+## Step 4 — KQL Log Analysis
+
+I used Kusto Query Language (KQL) in Microsoft Sentinel to analyze Azure Activity telemetry stored in the Log Analytics workspace.
+
+I started by querying recent Azure Activity events and then used filtering and projection to focus on successful operations, activity associated with the Block 3 resource group, and failed Azure operations.
+
+I also used the `summarize` operator to group Azure operations and identify which activities occurred most frequently.
+
+The main KQL operators I practiced were:
+
+- `where` for filtering events
+- `project` for selecting specific columns
+- `sort` for arranging query results
+- `summarize` for grouping and aggregating data
+- `take` for limiting the number of returned records
+
+I saved the reusable queries in:
+
+`kql/azure-activity-basics.kql`
+
+These queries provide the foundation for the custom detection rules that will be created later in the project.
+
+![Recent Azure Activity KQL](screenshots/07-kql-recent-azure-activity.png.png)
+
+![Azure Operation Summary](screenshots/08-kql-operation-summary.png.png)
