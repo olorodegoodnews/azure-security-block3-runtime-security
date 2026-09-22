@@ -138,6 +138,7 @@ AzureActivity
 | sort by TimeGenerated desc
 | take 20
 
+```
 
 ## Step 4 — KQL Log Analysis
 
@@ -164,3 +165,53 @@ These queries provide the foundation for the custom detection rules that will be
 ![Recent Azure Activity KQL](screenshots/07-kql-recent-azure-activity.png.png)
 
 ![Azure Operation Summary](screenshots/08-kql-operation-summary.png.png)
+
+
+## Step 5a — Custom Detection 1: Azure Resource Group Deletion
+
+I created my first custom Microsoft Sentinel analytics rule to detect successful deletion of an Azure resource group.
+
+The detection uses the `AzureActivity` table and searches for successful resource group deletion operations.
+
+The purpose of this rule is to provide visibility into destructive Azure administrative actions. Resource group deletion can be legitimate during maintenance or cleanup, but it can also represent destructive activity if performed without authorization.
+
+### 5b Detection Query Validation
+
+Before creating the analytics rule, I tested the KQL query directly in Microsoft Sentinel Logs to confirm that it correctly searched for Azure resource group deletion events.
+
+![Resource Group Deletion Query](screenshots/09-resource-group-deletion-query.png.png)
+
+### Analytics Rule Configuration
+
+I created a scheduled analytics rule named `Azure Resource Group Deletion`.
+
+The rule was configured with:
+
+- Severity: Medium
+- MITRE ATT&CK tactic: Impact
+- MITRE ATT&CK technique: T1485 — Data Destruction
+- Account entity mapping
+- Source IP entity mapping
+- Custom alert details
+- Incident creation enabled
+
+![Resource Group Deletion Rule](screenshots/10-resource-group-deletion-rule-created.png.png)
+
+### 5.c Detection Testing and Incident Generation
+
+To test the detection, I created an empty temporary resource group named:
+
+`rg-block3-detection-test`
+
+I then deleted the resource group and confirmed that the deletion event appeared in the `AzureActivity` table.
+
+The custom analytics rule detected the activity and Microsoft Sentinel generated an incident named:
+
+`Azure Resource Group Deletion`
+
+This successfully validated the complete detection workflow:
+
+`Azure Activity → KQL Query → Analytics Rule → Alert → Incident`
+
+![Resource Group Deletion Incident](screenshots/11-resource-group-deletion-incident.png.png)
+
