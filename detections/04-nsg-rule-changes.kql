@@ -1,0 +1,14 @@
+// Detection 04
+// Azure Network Security Group Rule Changes
+//
+// Purpose:
+// Detect successful creation, modification, or deletion
+// of Azure NSG security rules.
+//
+// Possible false positive:
+// Approved network administration or firewall maintenance.
+//
+// Response:
+// Verify who performed the change, inspect the affected NSG
+// and rule, confirm authorization, and determine whether
+// network exposure was increased.

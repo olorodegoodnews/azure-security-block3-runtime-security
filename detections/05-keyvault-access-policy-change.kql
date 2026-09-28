@@ -1,0 +1,12 @@
+// Detection 05
+// Azure Key Vault Access Policy Change
+//
+// Purpose:
+// Detect successful changes to Azure Key Vault access policies.
+//
+// Possible false positive:
+// Authorized administrator granting or modifying Key Vault access.
+//
+// Response:
+// Verify the administrator, affected vault, target identity,
+// permissions granted, and whether the change was authorized.

@@ -1,0 +1,25 @@
+// Daily Azure Activity event volume
+
+AzureActivity
+| summarize EventCount=count() by bin(TimeGenerated, 1d)
+| sort by TimeGenerated asc
+
+
+// Sentinel table ingestion summary
+
+union isfuzzy=true withsource=TableName
+    AzureActivity,
+    SecurityAlert,
+    SecurityIncident
+| summarize
+    EventCount=count(),
+    DataMB=round(sum(_BilledSize) / 1024 / 1024, 2)
+    by TableName
+| sort by EventCount desc
+
+
+// Most common Azure operations
+
+AzureActivity
+| summarize EventCount=count() by OperationNameValue
+| top 15 by EventCount desc

@@ -1,0 +1,41 @@
+// Detection 02
+// Azure RBAC Role Assignment Changes
+//
+// Purpose:
+// Detect successful Azure RBAC role assignment creation,
+// modification, or deletion.
+//
+// Possible false positive:
+// Approved administrative access changes.
+//
+// Response:
+// Verify who performed the change, confirm whether it was
+// authorized, identify the affected scope and principal,
+// and investigate related Azure administrative activity.
+
+AzureActivity
+| where OperationNameValue in~ (
+    "MICROSOFT.AUTHORIZATION/ROLEASSIGNMENTS/WRITE",
+    "MICROSOFT.AUTHORIZATION/ROLEASSIGNMENTS/DELETE"
+)
+| where ActivityStatusValue in~ ("Succeeded", "Success")
+| extend AccountName = iff(Caller contains "@", tostring(split(Caller, "@")[0]), Caller)
+| extend AccountUPNSuffix = iff(Caller contains "@", tostring(split(Caller, "@")[1]), "")
+| extend RBACAction = case(
+    OperationNameValue has "/WRITE", "Role Assignment Created or Updated",
+    OperationNameValue has "/DELETE", "Role Assignment Deleted",
+    "Unknown"
+)
+| project
+    TimeGenerated,
+    Caller,
+    AccountName,
+    AccountUPNSuffix,
+    CallerIpAddress,
+    RBACAction,
+    OperationNameValue,
+    ActivityStatusValue,
+    ResourceGroup,
+    ResourceId,
+    SubscriptionId,
+    CorrelationId

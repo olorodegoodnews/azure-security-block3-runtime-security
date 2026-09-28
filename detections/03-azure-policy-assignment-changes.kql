@@ -1,0 +1,27 @@
+AzureActivity
+| where OperationNameValue in~ (
+    "MICROSOFT.AUTHORIZATION/POLICYASSIGNMENTS/WRITE",
+    "MICROSOFT.AUTHORIZATION/POLICYASSIGNMENTS/DELETE"
+)
+| where ActivityStatusValue in~ ("Succeeded", "Success")
+| extend AccountName = iff(Caller contains "@", tostring(split(Caller, "@")[0]), Caller)
+| extend AccountUPNSuffix = iff(Caller contains "@", tostring(split(Caller, "@")[1]), "")
+| extend PolicyAction = case(
+    OperationNameValue has "/WRITE", "Policy Assignment Created or Updated",
+    OperationNameValue has "/DELETE", "Policy Assignment Deleted",
+    "Unknown"
+)
+| project
+    TimeGenerated,
+    Caller,
+    AccountName,
+    AccountUPNSuffix,
+    CallerIpAddress,
+    PolicyAction,
+    OperationNameValue,
+    ActivityStatusValue,
+    ResourceGroup,
+    ResourceId,
+    SubscriptionId,
+    CorrelationId
+| sort by TimeGenerated desc
