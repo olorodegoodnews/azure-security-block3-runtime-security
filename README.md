@@ -36,7 +36,6 @@ The implementation guide contains the complete step-by-step configuration, KQL q
 azure-security-block3-runtime-security/
 ├── detections/
 ├── docs/
-├── endpoint-security/
 ├── kql/
 ├── screenshots/
 ├── sentinel/
