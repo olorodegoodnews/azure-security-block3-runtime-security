@@ -1,7 +1,5 @@
 # Block 3 — Runtime Security Implementation Guide
 
-# Block 3 — Runtime Security Implementation Guide
-
 ## Overview
 
 In Block 3, I focused on runtime security monitoring, SIEM engineering, detection engineering, identity investigation, and security automation.
@@ -28,9 +26,9 @@ I also started an additional Azure Key Vault detection. The Key Vault detection 
 
 ---
 
-# Step 1 — Block 3 Project Preparation
+# Step 1 — Block 3 Documentation Preparation
 
-I created a separate project repository for Block 3 so that runtime security work could be maintained independently from my Block 2 infrastructure project.
+I created a separate Documentation repository for Block 3 so that runtime security work could be maintained independently from my Block 2 infrastructure Documentation.
 
 The repository was structured to separate KQL queries, custom detections, Microsoft Sentinel work, endpoint-security work, SOAR automation, documentation, and screenshot evidence.
 
